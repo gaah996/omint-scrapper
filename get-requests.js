@@ -2,6 +2,7 @@ const request = require('request');
 const cheerio = require('cheerio');
 const axios = require('axios');
 const fs = require('fs');
+const Request = require('./database/Request');
 const requests = [];
 const baseURL = 'https://app360.omint.com.br';
 const categoriesUrl = baseURL + '/OmintRedev2018/Redecredenciada/BuscaPrestadores/BuscaAvancada';
@@ -65,8 +66,8 @@ request(categoriesUrl, (error, response, body) => {
                 codigoUf: state
               }
             }).then(response => {
-              response.data.forEach(city => {
-                requests.push({
+              asyncForEach(response.data, async city => {
+                let data = {
                   Estado: state,
                   Cidade: city.Valor,
                   Bairro: null,
@@ -82,7 +83,9 @@ request(categoriesUrl, (error, response, body) => {
                   Cidade: city.Valor,
                   CodigoEstado: state,
                   Bairro: null
-                });
+                }
+                await Request.create(data);
+                requests.push(data);
               });
             }, error => null);
           });
