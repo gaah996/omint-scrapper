@@ -2,13 +2,14 @@ const axios = require('axios');
 const fs = require('fs');
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
+const Places = require('./database/Places')
 const results = [];
 
 let data = JSON.parse(fs.readFileSync('files/Request.txt'));
-data = data.slice(0,10);
+data = data.slice(1000,1010);
 
 asyncForEach(data, async item => {
-  const browser = await puppeteer.launch({headless:true});
+  const browser = await puppeteer.launch({headless: false});
   let page = null;
 
   //Set plan
@@ -82,7 +83,7 @@ function extractDoctors(htmlArray, info) {
     const $ = cheerio.load(html);
 
     $('.table-result td').each((i, el) => {
-      results.push({
+      let data = {
         name: $('.span-texto-conteudo-prestador', el).text().trim(),
         address: $('.endereco-completo', el).text().trim().replace(/\s{2,}|\\n/g, ''),
         state: info.Estado,
@@ -92,10 +93,15 @@ function extractDoctors(htmlArray, info) {
         category: info.TipoAtendimento,
         latidude: null,
         longitude: null
+      };
+
+      makeAsyncSync(() => {
+        Places.create(data);
       });
+      results.push(data);
     });
   });
-  console.log(results);
+  
   fs.writeFile('files/Places.txt', JSON.stringify(results), error => {
     if(error) throw error;
   });
@@ -105,4 +111,8 @@ async function asyncForEach(array, callback) {
   for (let index = 0; index < array.length; index++) {
     await callback(array[index], index, array);
   }
+}
+
+async function makeAsyncSync(callback) {
+  await callback();
 }

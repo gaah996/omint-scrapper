@@ -34,7 +34,7 @@ Places.init({
   },
 }, {
   sequelize,
-  modelName: 'places',
+  modelName: 'place',
   timestamps: true
 });
 
