@@ -9,7 +9,7 @@ const results = [];
   let data = await Request.findAll({
     where: {
       checked: false,
-      Cidade: 'SAO PAULO'
+      Cidade: 'SANTO ANDRE'
     },
   });
   
@@ -30,6 +30,18 @@ const results = [];
         });
         keepGoing = true;
       } catch(error) {
+        try {
+          await page.waitForSelector('.cabecalho-filtro', {
+            timeout: 1000
+          });
+          await item.update({
+            checked: true
+          });
+          await browser.close();
+          return;
+        } catch(error) {
+          console.log('Error: ', error);
+        }
         await page.close();
         console.log('Error: ', error);
       }

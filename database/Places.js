@@ -11,10 +11,22 @@ Places.init({
   address: {
     type: Sequelize.STRING
   },
+  street: {
+    type: Sequelize.STRING
+  },
+  number: {
+    type: Sequelize.STRING
+  },
+  neighborhood: {
+    type: Sequelize.STRING
+  },
   state: {
     type: Sequelize.STRING
   },
   city: {
+    type: Sequelize.STRING
+  },
+  zip: {
     type: Sequelize.STRING
   },
   specialty_code: {
