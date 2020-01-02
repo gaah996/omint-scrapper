@@ -9,7 +9,7 @@ const results = [];
   let data = await Request.findAll({
     where: {
       checked: false,
-      Cidade: 'SANTO ANDRE'
+      Estado: 'MS'
     },
   });
   
