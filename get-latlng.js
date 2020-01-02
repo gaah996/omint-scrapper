@@ -29,13 +29,16 @@ const API_KEY = 'AIzaSyBsG3lf2qagDLt2-ZYcXwCIntmtmXMln1A';
         });
         let neighborhood = haveNeighborhood.length > 0 ? haveNeighborhood[0]['short_name'] : null;
 
+        let haveStreet = response.data.results[0].address_components.filter(address => {
+          return address.types.includes('route');
+        });
+        let street = haveStreet.length > 0 ? haveStreet[0]['short_name'] : null;
+
         item.update({
           latitude: response.data.results[0].geometry.location.lat,
           longitude: response.data.results[0].geometry.location.lng,
           number: number,
-          street: response.data.results[0].address_components.filter(address => {
-            return address.types.includes('route');
-          })[0]['short_name'],
+          street: street,
           neighborhood: neighborhood,
           city: response.data.results[0].address_components.filter(address => {
             return address.types.includes('administrative_area_level_2');
